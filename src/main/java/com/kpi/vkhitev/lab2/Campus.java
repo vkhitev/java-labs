@@ -14,26 +14,25 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Campus {
-  private List<Room> classrooms;
+//  private List<Room> classrooms;
   private Map<String, Timetable> schedule;
 
   Campus() {
-    this.classrooms = new ArrayList<Room>();
+//    this.classrooms = new ArrayList<Room>();
 
     this.schedule = ScheduleRequester.fetchGroupNames()
       .parallelStream()
-      .limit(3)
       .map(ScheduleRequester::fetchTimetable)
+      .limit(5)
       .filter(timetable -> timetable != null && !timetable.getWeeks().isEmpty())
-      .peek(System.out::println)
       .collect(Collectors.toMap(Timetable::getGroupFullName, Function.identity()));
 
     System.out.println("Campus constructed");
   }
 
-  public List<Room> getClassrooms() {
-    return classrooms;
-  }
+//  public List<Room> getClassrooms() {
+//    return classrooms;
+//  }
 
   public Map<String, Timetable> getSchedule() {
     return schedule;
@@ -100,5 +99,13 @@ public class Campus {
     Set<String> allRooms = getAllRooms();
     allRooms.removeAll(getBusyRooms(week, day, lesson));
     return allRooms;
+  }
+
+  public Set<String> getRoomsOfBuilding(String builing) {
+    Set<String> rooms = getAllRooms();
+    return rooms
+      .stream()
+      .filter(name -> name.substring(name.length() - 2, name.length()).equals(builing))
+      .collect(Collectors.toSet());
   }
 }
